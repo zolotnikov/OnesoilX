@@ -1,7 +1,58 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, Text, View, Image } from "react-native";
 
 export default OneField = props => {
+    let value = "";
+    let subvalue = "";
+    let subvalueBG = "transparent";
+    let subvalueColor = "transparent";
+
+    switch (props.sort) {
+        case 0: //Имя
+            value = "";
+            subvalue = "";
+            break;
+        case 1: //NDVI
+            value = props.avg.toFixed(2);
+            subvalue = `${props.delta > 0 ? "+" : ""}${props.delta.toFixed(2)}`;
+            subvalueBG =
+                props.delta > 0
+                    ? "#E9F7EF"
+                    : props.delta < 0
+                    ? "#FAE6E5"
+                    : "#F2F6F8";
+            subvalueColor =
+                props.delta > 0
+                    ? "#27AE60"
+                    : props.delta < 0
+                    ? "#FF3B30"
+                    : "#A5B2BC";
+            break;
+        case 2: //Урожайность
+            value = props.yield_value;
+
+            break;
+        case 3: //Дата сева
+            value = props.sowing_date;
+            subvalue = "BBCH00";
+            subvalueBG = "#F2F6F8";
+            subvalueColor = "#A5B2BC";
+            break;
+        case 4: //Дата уборки
+            value = props.harvest_date;
+            subvalue = props.yield_value;
+            subvalueBG = "#F2F6F8";
+            subvalueColor = "#A5B2BC";
+            break;
+        case 5: //Культура
+            value = "";
+            break;
+    }
+
+    useEffect(() => {
+        // console.warn(`value: ${value}`);
+    });
+
     return (
         <View style={styles.container}>
             <Image
@@ -12,26 +63,21 @@ export default OneField = props => {
             />
             <View style={styles.textPart}>
                 <View style={styles.nameHa}>
-                    <Text style={styles.name}>Поле {props.name} </Text>
+                    <Text style={styles.name}>{props.name} </Text>
                     <Text style={styles.ha}>
                         {props.crop ? props.crop : "Без культуры"} —{" "}
                         {props.ha.toFixed(2)} га
                     </Text>
                 </View>
                 <View style={styles.values}>
-                    <Text style={styles.value}>{props.value.toFixed(2)}</Text>
+                    <Text style={styles.value}>{value}</Text>
                     <View
                         style={{
                             alignSelf: "flex-end",
                             paddingHorizontal: 5,
                             paddingVertical: 4,
                             borderRadius: 4,
-                            backgroundColor:
-                                props.subvalue > 0
-                                    ? "#E9F7EF"
-                                    : props.subvalue < 0
-                                    ? "#FAE6E5"
-                                    : "#F2F6F8"
+                            backgroundColor: subvalueBG
                         }}
                     >
                         <Text
@@ -39,16 +85,10 @@ export default OneField = props => {
                                 fontSize: 12,
                                 lineHeight: 14,
                                 fontWeight: "500",
-                                color:
-                                    props.subvalue > 0
-                                        ? "#27AE60"
-                                        : props.subvalue < 0
-                                        ? "#FF3B30"
-                                        : "#A5B2BC"
+                                color: subvalueColor
                             }}
                         >
-                            {props.subvalue > 0 ? "+" : ""}
-                            {props.subvalue.toFixed(2)}
+                            {subvalue}
                         </Text>
                     </View>
                 </View>

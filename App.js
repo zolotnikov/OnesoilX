@@ -28,7 +28,7 @@ const reducer = (state = initialState, action) => {
                     containerStyle: { flex: 1 }
                 },
                 sort: action.sort,
-                sortDirect: true,
+                sortDirect: action.sortDirect,
                 isGroup: true
             };
         default:

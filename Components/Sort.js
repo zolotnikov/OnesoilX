@@ -15,7 +15,6 @@ function mapStateToProps(state) {
 }
 
 const Sort = props => {
-    const [localSortDirect, setLocalSortDirect] = useState(props.sortDirect);
     const [localGroup, setLocalGroup] = useState(props.isGroup);
 
     return (
@@ -34,10 +33,11 @@ const Sort = props => {
                         ></Header>
                         <Divider />
                         <Radiogroup
+                            sort={props.sort}
                             togle={localGroup}
                             setSort={props.setLocalSort}
-                            localSortDirect={localSortDirect}
-                            setLocalSortDirect={setLocalSortDirect}
+                            localSortDirect={props.localSortDirect}
+                            setLocalSortDirect={props.setLocalSortDirect}
                         />
                     </View>
                 </ModalContent>

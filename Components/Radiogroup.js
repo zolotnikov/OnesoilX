@@ -1,24 +1,11 @@
 import React, { useEffect } from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { CheckIcon } from "./Icons";
-import { connect } from "react-redux";
-
-function mapStateToProps(state) {
-    return {
-        sort: state.sort,
-        sortDirect: state.sortDirect,
-        isGroup: state.isGroup
-    };
-}
 
 const Radiogroup = props => {
-    const { togle, setSort, localSortDirect, setLocalSortDirect } = props;
+    const { togle, setSort } = props;
     const [active, setActive] = React.useState({
         id: props.sort
-    });
-
-    useEffect(() => {
-        console.warn(active);
     });
 
     return (
@@ -40,7 +27,9 @@ const Radiogroup = props => {
                         style={styles.container}
                         onPress={() => {
                             if (option.id == active.id) {
-                                setLocalSortDirect(!localSortDirect);
+                                props.setLocalSortDirect(
+                                    !props.localSortDirect
+                                );
                             } else {
                                 setActive({ id: option.id });
                                 setSort(option.id);
@@ -70,7 +59,7 @@ const Radiogroup = props => {
                                 ]}
                             >
                                 <Text style={styles.sort}>
-                                    {localSortDirect
+                                    {props.localSortDirect
                                         ? `${option.sort}`
                                         : `${option.sortAlt}`}
                                 </Text>
@@ -152,24 +141,30 @@ const options = {
         },
         {
             id: 1,
-            name: "Дате сева",
-            sort: "Сначала ранняя",
-            sortAlt: "Сначала поздняя"
-        },
-        {
-            id: 2,
             name: "Индексу вегетации",
             sort: "Сначала низкий",
             sortAlt: "Сначала высокий"
         },
         {
-            id: 3,
-            name: "Однородности поля",
+            id: 2,
+            name: "Урожайности",
             sort: "Сначала низкая",
             sortAlt: "Сначала высокая"
         },
         {
+            id: 3,
+            name: "Дате сева",
+            sort: "Сначала ранняя",
+            sortAlt: "Сначала поздняя"
+        },
+        {
             id: 4,
+            name: "Дате уборки",
+            sort: "Сначала ранняя",
+            sortAlt: "Сначала поздняя"
+        },
+        {
+            id: 5,
             name: "Культуре",
             sort: "A → Б",
             sortAlt: "Б → А"
@@ -177,5 +172,4 @@ const options = {
     ]
 };
 
-export default connect(mapStateToProps)(Radiogroup);
-// export default Radiogroup;
+export default Radiogroup;
