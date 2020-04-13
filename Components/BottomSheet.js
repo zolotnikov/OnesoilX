@@ -8,6 +8,7 @@ import {
     TouchableOpacity,
     Platform
 } from "react-native";
+import { connect } from "react-redux";
 
 const DEVICE_WIDTH = Dimensions.get("window").width;
 const DEVICE_HEIGHT = Dimensions.get("window").height;
@@ -22,11 +23,21 @@ const scrollViewStyles = {
     overflow: "visible"
 };
 
-export default class DockingBottomSheet extends PureComponent {
+function mapDispatchToProps(dispatch) {
+    return {
+        updateSortButton: scrollValue =>
+            dispatch({
+                type: "UPDATE_SORT_BUTTON",
+                scrollValue: scrollValue
+            })
+    };
+}
+
+class DockingBottomSheet extends PureComponent {
     static defaultProps = {
         containerStyle: { flex: 1 },
-        dockHeight: 96,
-        sheetExpandedTopOffset: 128,
+        dockHeight: 220,
+        sheetExpandedTopOffset: 54,
         sheetDarknessAlpha: 0.7,
         mainViewDownScale: 0.9,
         mainContentView: () => null,
@@ -35,7 +46,6 @@ export default class DockingBottomSheet extends PureComponent {
 
     constructor(props) {
         super(props);
-
         this.topSpacing = props.sheetExpandedTopOffset;
         this.viewHeight = DEVICE_HEIGHT;
 
@@ -187,6 +197,8 @@ export default class DockingBottomSheet extends PureComponent {
     }
 
     getScrollValue() {
+        this.props.updateSortButton(this.state.scrollY);
+        // console.warn(this.state.scrollY);
         return this.state.scrollY._value;
     }
 
@@ -210,6 +222,7 @@ export default class DockingBottomSheet extends PureComponent {
             ) {
                 this.doScroll(0, true);
                 this.isSystemScroll = false;
+                // console.warn("closing");
                 this.setState({
                     scrollViewPointerEvents: "none",
                     pointerEventTogglerPE: null
@@ -218,6 +231,7 @@ export default class DockingBottomSheet extends PureComponent {
                 this.isSystemScroll = false;
                 this.shouldDockAtBottom = false;
                 this.doScroll(this.topSpacing, true);
+                // console.warn("opening");
             }
         }
     }
@@ -290,3 +304,5 @@ export default class DockingBottomSheet extends PureComponent {
         );
     }
 }
+export default connect(null, mapDispatchToProps)(DockingBottomSheet);
+// export default DockingBottomSheet

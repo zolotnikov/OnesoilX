@@ -65,7 +65,8 @@ export default OneField = props => {
                 <View style={styles.nameHa}>
                     <Text style={styles.name}>{props.name} </Text>
                     <Text style={styles.ha}>
-                        {props.crop ? props.crop : "Без культуры"} —{" "}
+                        {props.crop}
+                        {props.crop ? " — " : ""}
                         {props.ha.toFixed(2)} га
                     </Text>
                 </View>

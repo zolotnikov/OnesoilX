@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { CheckIcon } from "./Icons";
 
 const Radiogroup = props => {
-    const { togle, setSort } = props;
+    const { sort, setSort } = props;
     const [active, setActive] = React.useState({
         id: props.sort
     });
@@ -16,57 +16,54 @@ const Radiogroup = props => {
             }}
         >
             {options.items.map(option => {
-                return (
-                    <TouchableOpacity
-                        key={option.id}
-                        visible={
-                            option.name === "Культуре" && togle == true
-                                ? false
-                                : true
-                        }
-                        style={styles.container}
-                        onPress={() => {
-                            if (option.id == active.id) {
-                                props.setLocalSortDirect(
-                                    !props.localSortDirect
-                                );
-                            } else {
-                                setActive({ id: option.id });
-                                setSort(option.id);
-                            }
-                        }}
-                    >
-                        <View
-                            style={[
-                                styles.icon,
-                                active.id === option.id
-                                    ? styles.Visible
-                                    : styles.Invisible
-                            ]}
+                if (option.id != 5 || props.localGroup != true) {
+                    return (
+                        <TouchableOpacity
+                            key={option.id}
+                            style={styles.container}
+                            onPress={() => {
+                                if (option.id == active.id) {
+                                    props.setLocalSortDirect(
+                                        !props.localSortDirect
+                                    );
+                                } else {
+                                    setActive({ id: option.id });
+                                    setSort(option.id);
+                                }
+                            }}
                         >
-                            <CheckIcon />
-                        </View>
-                        <View style={styles.optionContainer}>
-                            <Text style={styles.option}>{option.name}</Text>
-                        </View>
-                        <View style={styles.sortContainer}>
                             <View
                                 style={[
-                                    styles.sortBG,
+                                    styles.icon,
                                     active.id === option.id
                                         ? styles.Visible
                                         : styles.Invisible
                                 ]}
                             >
-                                <Text style={styles.sort}>
-                                    {props.localSortDirect
-                                        ? `${option.sort}`
-                                        : `${option.sortAlt}`}
-                                </Text>
+                                <CheckIcon />
                             </View>
-                        </View>
-                    </TouchableOpacity>
-                );
+                            <View style={styles.optionContainer}>
+                                <Text style={styles.option}>{option.name}</Text>
+                            </View>
+                            <View style={styles.sortContainer}>
+                                <View
+                                    style={[
+                                        styles.sortBG,
+                                        active.id === option.id
+                                            ? styles.Visible
+                                            : styles.Invisible
+                                    ]}
+                                >
+                                    <Text style={styles.sort}>
+                                        {props.localSortDirect
+                                            ? `${option.sort}`
+                                            : `${option.sortAlt}`}
+                                    </Text>
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    );
+                }
             })}
         </View>
     );

@@ -1,19 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Provider } from "react-redux";
 import { createStore } from "redux";
 import TabNavigator from "./TabNavigator";
 
 const initialState = {
     fieldsBottomSheet: {
-        dockHeight: 160,
+        dockHeight: 220,
         sheetExpandedTopOffset: 54,
         sheetDarknessAlpha: 0.7,
-        mainViewDownScale: 0.9,
         containerStyle: { flex: 1 }
     },
     sort: 0,
     sortDirect: true,
-    isGroup: true
+    isGroup: true,
+    scrollValue: 10
 };
 
 const reducer = (state = initialState, action) => {
@@ -21,7 +21,7 @@ const reducer = (state = initialState, action) => {
         case "UPDATE_SORT":
             return {
                 fieldsBottomSheet: {
-                    dockHeight: 160,
+                    dockHeight: 220,
                     sheetExpandedTopOffset: 54,
                     sheetDarknessAlpha: 0.7,
                     mainViewDownScale: 0.9,
@@ -29,7 +29,21 @@ const reducer = (state = initialState, action) => {
                 },
                 sort: action.sort,
                 sortDirect: action.sortDirect,
-                isGroup: true
+                isGroup: action.isGroup,
+                scrollValue: state.scrollValue
+            };
+        case "UPDATE_SORT_BUTTON":
+            return {
+                fieldsBottomSheet: {
+                    dockHeight: 220,
+                    sheetExpandedTopOffset: 54,
+                    sheetDarknessAlpha: 0.7,
+                    containerStyle: { flex: 1 }
+                },
+                sort: state.sort,
+                sortDirect: state.sortDirect,
+                isGroup: state.isGroup,
+                scrollValue: action.scrollValue
             };
         default:
             return state;

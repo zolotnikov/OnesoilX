@@ -13,37 +13,31 @@ import Divider from "./Divider";
 import * as fieldData from "../fields.json";
 import * as fieldData2 from "../fields2.json";
 import Sort from "./Sort";
+import SectionHeader from "./SectionHeader";
 import { connect } from "react-redux";
 
 function mapStateToProps(state) {
     return {
         sort: state.sort,
-        sortDirect: state.sortDirect
+        sortDirect: state.sortDirect,
+        isGroup: state.isGroup,
+        scrollValue: state.scrollValue
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        updateSort: (sort, sortDirect) =>
+        updateSort: (sort, sortDirect, isGroup) =>
             dispatch({
                 type: "UPDATE_SORT",
                 sort: sort,
-                sortDirect: sortDirect
+                sortDirect: sortDirect,
+                isGroup: isGroup
             })
     };
 }
 
 function FieldList(props) {
-    const mergedItems = fieldData.items.map(item1 => {
-        const item2 = fieldData2.items.find(
-            item2 => item2.id === item1.field_id
-        );
-        return {
-            ...item1,
-            ...item2
-        };
-    });
-
     const mergedItems2 = fieldData2.items.map(item2 => {
         const item1 = fieldData.items.find(
             item1 => item1.field_id === item2.id
@@ -53,6 +47,32 @@ function FieldList(props) {
             ...item2
         };
     });
+
+    const crops = [];
+
+    for (var i = 0; i < fieldData2.items.length; i++) {
+        crops.push(fieldData2.items[i].crops[0].crop);
+    }
+
+    const uniqCrops = Array.from(new Set(crops));
+
+    const sortButtonTitle = {
+        0: "названию",
+        1: "индексу вегетации",
+        2: "урожайности",
+        3: "дате сева",
+        4: "дате уборки",
+        5: "культуре"
+    };
+
+    const russianCropName = {
+        sunflower: "Подсолнечник",
+        maize_grain: "Кукуруза на зерно",
+        alfaalfa: "Люцерна",
+        wheat_soft_winter: "Пшеница мягкая озимая",
+        sugar_beet: "Свёкла сахарная",
+        barley_winter: "Ячмень озимый"
+    };
 
     const sortFields = mergedItems2.sort(function(a, b) {
         switch (props.sort) {
@@ -96,7 +116,6 @@ function FieldList(props) {
                 )
                     return -1;
                 return 0;
-
             case 3: //Дата сева
                 if (
                     (a.crops[0].sowing_date > b.crops[0].sowing_date &&
@@ -153,73 +172,181 @@ function FieldList(props) {
     const [sortVisible, setSortVisible] = useState(false);
     const [localSort, setLocalSort] = useState(props.sort);
     const [localSortDirect, setLocalSortDirect] = useState(props.sortDirect);
+    const [localGroup, setLocalGroup] = useState(props.isGroup);
 
+    // const animatedScrollValue = new Animated.Value(props.scrollValue);
+
+    console.warn(props.scrollValue);
+
+    const [animatedScrollValue, setAnimatedScrollValue] = useState(
+        () => new Animated.Value(props.scrollValue)
+    );
+
+    useEffect(() => {
+        // console.warn(animatedScrollValue.interpolate);
+        // setAnimatedScrollValue(20);
+        // const timer = setTimeout(
+        //     () => setAnimatedScrollValue(props.scrollValue),
+        //     3000
+        // );
+        // return () => clearTimeout(timer);
+    });
+
+    // function xxx() {
+    //     setAnimatedScrollValue(props.scrollValue);
+    //     console.warn(animatedScrollValue.interpolate);
+    // }
     return (
         <View style={styles.container}>
             <Search />
-            <TouchableOpacity
-                title="Открыть"
-                onPress={() => setSortVisible(true)}
-            >
-                <Text style={styles.sortButton}>
-                    Сортировка по индексу вегетации
-                </Text>
+            {/* <TouchableOpacity
+                // onPress={xxx}
+                style={{ minHeight: 50, backgroundColor: "#000" }}
+            ></TouchableOpacity> */}
+            <TouchableOpacity onPress={() => setSortVisible(true)}>
+                <Animated.Text
+                    style={[
+                        styles.sortButton,
+                        {
+                            // opacity: animatedScrollValue.interpolate({
+                            //     inputRange: [0, 454],
+                            //     outputRange: [0, 1]
+                            // }),
+                            // height: animatedScrollValue.interpolate({
+                            //     inputRange: [0, 454],
+                            //     outputRange: [0, 30]
+                            // })
+                        }
+                    ]}
+                >
+                    Сортировка по {sortButtonTitle[props.sort]}
+                </Animated.Text>
             </TouchableOpacity>
             <Sort
                 visible={sortVisible}
                 setLocalSort={setLocalSort}
                 setLocalSortDirect={setLocalSortDirect}
                 localSortDirect={localSortDirect}
+                localGroup={localGroup}
+                setLocalGroup={setLocalGroup}
                 onTouchOutside={() => {
                     setSortVisible(false);
                 }}
                 close={() => {
                     setSortVisible(false);
                     setLocalSortDirect(props.sortDirect);
+                    setLocalGroup(props.isGroup);
                 }}
                 save={() => {
                     setSortVisible(false),
-                        props.updateSort(localSort, localSortDirect);
+                        props.updateSort(
+                            localSort,
+                            localSortDirect,
+                            localGroup
+                        );
                 }}
             ></Sort>
             <Divider />
-            {mergedItems2.map((field, index) => {
-                return (
-                    <OneField
-                        key={index}
-                        sort={props.sort}
-                        img={field.ndvi}
-                        name={field.title}
-                        ha={field.area}
-                        crop={
-                            field.crops[0]
-                                ? field.crops[0].crop
-                                : "Без культуры"
-                        }
-                        avg={field.avg}
-                        yield_value={
-                            field.crops[0] && field.crops[0].yield_value != null
-                                ? `${field.crops[0].yield_value} т/га`
-                                : "Не указано"
-                        }
-                        sowing_date={
-                            field.crops[0]
-                                ? `${formatter.format(
-                                      new Date(field.crops[0].sowing_date)
-                                  )}`
-                                : ""
-                        }
-                        harvest_date={
-                            field.crops[0]
-                                ? `${formatter.format(
-                                      new Date(field.crops[0].harvest_date)
-                                  )}`
-                                : ""
-                        }
-                        delta={field.delta}
-                    />
-                );
-            })}
+
+            {props.isGroup ? (
+                uniqCrops.map((crop, index) => {
+                    return (
+                        <View key={index}>
+                            <SectionHeader
+                                title={russianCropName[crop]}
+                            ></SectionHeader>
+                            {mergedItems2.map((field, index) => {
+                                if (field.crops[0].crop === crop)
+                                    return (
+                                        <OneField
+                                            key={index}
+                                            sort={props.sort}
+                                            img={field.ndvi}
+                                            name={field.title}
+                                            ha={field.area}
+                                            crop=""
+                                            avg={field.avg}
+                                            yield_value={
+                                                field.crops[0] &&
+                                                field.crops[0].yield_value !=
+                                                    null
+                                                    ? `${field.crops[0].yield_value} т/га`
+                                                    : "Не указано"
+                                            }
+                                            sowing_date={
+                                                field.crops[0]
+                                                    ? `${formatter.format(
+                                                          new Date(
+                                                              field.crops[0].sowing_date
+                                                          )
+                                                      )}`
+                                                    : ""
+                                            }
+                                            harvest_date={
+                                                field.crops[0]
+                                                    ? `${formatter.format(
+                                                          new Date(
+                                                              field.crops[0].harvest_date
+                                                          )
+                                                      )}`
+                                                    : ""
+                                            }
+                                            delta={field.delta}
+                                        />
+                                    );
+                            })}
+                            <Divider />
+                        </View>
+                    );
+                })
+            ) : (
+                <View>
+                    <SectionHeader title={"Мои поля"}></SectionHeader>
+                    {mergedItems2.map((field, index) => {
+                        return (
+                            <OneField
+                                key={index}
+                                sort={props.sort}
+                                img={field.ndvi}
+                                name={field.title}
+                                ha={field.area}
+                                crop={
+                                    field.crops[0]
+                                        ? russianCropName[field.crops[0].crop]
+                                        : "Без культуры"
+                                }
+                                avg={field.avg}
+                                yield_value={
+                                    field.crops[0] &&
+                                    field.crops[0].yield_value != null
+                                        ? `${field.crops[0].yield_value} т/га`
+                                        : "Не указано"
+                                }
+                                sowing_date={
+                                    field.crops[0]
+                                        ? `${formatter.format(
+                                              new Date(
+                                                  field.crops[0].sowing_date
+                                              )
+                                          )}`
+                                        : ""
+                                }
+                                harvest_date={
+                                    field.crops[0]
+                                        ? `${formatter.format(
+                                              new Date(
+                                                  field.crops[0].harvest_date
+                                              )
+                                          )}`
+                                        : ""
+                                }
+                                delta={field.delta}
+                            />
+                        );
+                    })}
+                    <Divider />
+                </View>
+            )}
         </View>
     );
 }

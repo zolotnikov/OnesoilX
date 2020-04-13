@@ -15,17 +15,16 @@ const Fields = props => {
     const bottomSheetRef = useRef(null);
 
     useEffect(() => {
-        fieldCardHeandler();
         setBottomSheet(props.fieldsBottomSheet);
     });
 
-    const fieldCardHeandler = () => {
-        if (props.action == "openNewSampling") {
-            bottomSheetRef.current.dockBottomSheet();
-        } else {
-            bottomSheetRef.current.expandBottomSheet();
-        }
-    };
+    // const fieldCardHeandler = () => {
+    //     if (props.action == "openFieldList") {
+    //         bottomSheetRef.current.dockBottomSheet();
+    //     } else {
+    //         bottomSheetRef.current.expandBottomSheet();
+    //     }
+    // };
 
     return (
         <View style={{ flex: 1, backgroundColor: "#EEE" }}>

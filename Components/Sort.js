@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Modal, { ModalContent } from "react-native-modals";
-import { View, StyleSheet, Switch } from "react-native";
+import { View, StyleSheet, Switch, Text } from "react-native";
 import Header from "./Header";
 import Divider from "./Divider";
 import Radiogroup from "./Radiogroup";
@@ -15,8 +15,6 @@ function mapStateToProps(state) {
 }
 
 const Sort = props => {
-    const [localGroup, setLocalGroup] = useState(props.isGroup);
-
     return (
         <View style={styles.container}>
             <Modal.BottomModal
@@ -32,9 +30,19 @@ const Sort = props => {
                             save={props.save}
                         ></Header>
                         <Divider />
+                        <View style={styles.grouping}>
+                            <Text style={styles.groupTitle}>
+                                Группировка по культурам
+                            </Text>
+                            <Switch
+                                value={props.localGroup}
+                                onValueChange={props.setLocalGroup}
+                            />
+                        </View>
+                        <Divider />
                         <Radiogroup
                             sort={props.sort}
-                            togle={localGroup}
+                            localGroup={props.localGroup}
                             setSort={props.setLocalSort}
                             localSortDirect={props.localSortDirect}
                             setLocalSortDirect={props.setLocalSortDirect}
@@ -61,6 +69,18 @@ const styles = StyleSheet.create({
     wrapper: {
         flex: 1,
         minHeight: 500
+    },
+    grouping: {
+        flex: 1,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        maxHeight: 52,
+        paddingHorizontal: 15
+    },
+    groupTitle: {
+        color: "#222",
+        fontSize: 16
     }
 });
 

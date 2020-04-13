@@ -4,9 +4,9 @@ import { StyleSheet, Text, View, Button, TouchableOpacity } from "react-native";
 function Header(props) {
     return (
         <View style={styles.container}>
-            <Button title="Close" onPress={props.close}></Button>
+            <Button title="Отмена" onPress={props.close}></Button>
             <Text style={styles.title}>{props.title}</Text>
-            <Button title="Save" onPress={props.save}></Button>
+            <Button title="Сохранить" onPress={props.save}></Button>
         </View>
     );
 }
@@ -21,7 +21,8 @@ const styles = StyleSheet.create({
         width: "100%",
         backgroundColor: "#F9F9F9",
         alignItems: "center",
-        justifyContent: "space-between"
+        justifyContent: "space-between",
+        paddingHorizontal: 6
     },
     title: {
         fontSize: 17,
