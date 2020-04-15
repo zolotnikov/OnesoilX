@@ -13,7 +13,7 @@ const initialState = {
     sort: 0,
     sortDirect: true,
     isGroup: true,
-    scrollValue: 10
+    scrollValue: 0
 };
 
 const reducer = (state = initialState, action) => {
@@ -34,12 +34,7 @@ const reducer = (state = initialState, action) => {
             };
         case "UPDATE_SORT_BUTTON":
             return {
-                fieldsBottomSheet: {
-                    dockHeight: 220,
-                    sheetExpandedTopOffset: 54,
-                    sheetDarknessAlpha: 0.7,
-                    containerStyle: { flex: 1 }
-                },
+                fieldsBottomSheet: state.fieldsBottomSheet,
                 sort: state.sort,
                 sortDirect: state.sortDirect,
                 isGroup: state.isGroup,

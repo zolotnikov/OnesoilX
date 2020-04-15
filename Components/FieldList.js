@@ -15,6 +15,7 @@ import * as fieldData2 from "../fields2.json";
 import Sort from "./Sort";
 import SectionHeader from "./SectionHeader";
 import { connect } from "react-redux";
+import * as Icons from "./Icons";
 
 function mapStateToProps(state) {
     return {
@@ -174,53 +175,41 @@ function FieldList(props) {
     const [localSortDirect, setLocalSortDirect] = useState(props.sortDirect);
     const [localGroup, setLocalGroup] = useState(props.isGroup);
 
-    // const animatedScrollValue = new Animated.Value(props.scrollValue);
-
-    console.warn(props.scrollValue);
-
     const [animatedScrollValue, setAnimatedScrollValue] = useState(
-        () => new Animated.Value(props.scrollValue)
+        new Animated.Value(props.scrollValue)
     );
 
     useEffect(() => {
-        // console.warn(animatedScrollValue.interpolate);
-        // setAnimatedScrollValue(20);
-        // const timer = setTimeout(
-        //     () => setAnimatedScrollValue(props.scrollValue),
-        //     3000
-        // );
-        // return () => clearTimeout(timer);
+        if (props.scrollValue) {
+            setAnimatedScrollValue(props.scrollValue);
+        }
     });
 
-    // function xxx() {
-    //     setAnimatedScrollValue(props.scrollValue);
-    //     console.warn(animatedScrollValue.interpolate);
-    // }
     return (
         <View style={styles.container}>
             <Search />
-            {/* <TouchableOpacity
-                // onPress={xxx}
-                style={{ minHeight: 50, backgroundColor: "#000" }}
-            ></TouchableOpacity> */}
             <TouchableOpacity onPress={() => setSortVisible(true)}>
-                <Animated.Text
-                    style={[
-                        styles.sortButton,
-                        {
-                            // opacity: animatedScrollValue.interpolate({
-                            //     inputRange: [0, 454],
-                            //     outputRange: [0, 1]
-                            // }),
-                            // height: animatedScrollValue.interpolate({
-                            //     inputRange: [0, 454],
-                            //     outputRange: [0, 30]
-                            // })
-                        }
-                    ]}
+                <Animated.View
+                    style={{
+                        opacity: animatedScrollValue.interpolate({
+                            inputRange: [0, 454],
+                            outputRange: [0, 1]
+                        }),
+                        height: animatedScrollValue.interpolate({
+                            inputRange: [0, 454],
+                            outputRange: [0, 30]
+                        }),
+                        flex: 1,
+                        flexDirection: "row",
+                        alignItems: "center",
+                        paddingBottom: 10
+                    }}
                 >
-                    Сортировка по {sortButtonTitle[props.sort]}
-                </Animated.Text>
+                    <Text style={styles.sortButton}>
+                        Сортировка по {sortButtonTitle[props.sort]}
+                    </Text>
+                    <Icons.DropDown />
+                </Animated.View>
             </TouchableOpacity>
             <Sort
                 visible={sortVisible}
@@ -371,6 +360,6 @@ const styles = StyleSheet.create({
         fontWeight: "600",
         lineHeight: 20,
         marginLeft: 15,
-        marginBottom: 10
+        marginRight: 5
     }
 });
